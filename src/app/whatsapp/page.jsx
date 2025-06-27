@@ -8,23 +8,24 @@ export default function QrDisplay() {
 
   const startWhatsApp = async () => {
     setLoading(true);
-    setQrImage(null);
-
-    // Start the WhatsApp client
     await fetch('/api/whatsapp/start', { method: 'POST' });
 
-    // Keep polling until QR is ready
     const poll = setInterval(async () => {
       const res = await fetch('/api/whatsapp/qr');
       const data = await res.json();
+      console.log("data", data);
+
 
       if (data.status === 'ready') {
         clearInterval(poll);
-        setQrImage(data.qrImage);
+        setQrImage(data.qrImageUrl);
         setLoading(false);
       }
+
     }, 2000);
   };
+  console.log("qrImage", qrImage);
+
 
   return (
     <div style={{ textAlign: 'center' }}>
@@ -41,6 +42,10 @@ export default function QrDisplay() {
           <img src={qrImage} alt="WhatsApp QR Code" />
         </div>
       )}
+      <div style={{ marginTop: '20px' }}>
+        <img src='/whatsapp-qr.png' alt="WhatsApp QR Code" />
+      </div>
+
     </div>
   );
 }

@@ -1,17 +1,15 @@
 // app/api/whatsapp/qr/route.js (App Router)
-import { getQrImage } from '@/lib/whatsapp/whatsappClient';
+import { getQrImagePath  } from '@/lib/whatsapp/whatsappClient';
 
 export async function GET() {
-  const qrImage = getQrImage();
+  const imagePath = getQrImagePath();
 
-  if (!qrImage) {
-    return new Response(JSON.stringify({ status: 'waiting', message: 'QR not ready' }), {
-      status: 202,
-    });
+  if (!imagePath) {
+    return Response.json({ status: 'pending' });
   }
 
-  return new Response(JSON.stringify({ status: 'ready', qrImage }), {
-    status: 200,
+  return Response.json({
+    status: 'ready',
+    qrImageUrl: imagePath, // static file path
   });
-  
 }
